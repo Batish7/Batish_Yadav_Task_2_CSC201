@@ -11,8 +11,8 @@ public class RatingCounter {
         // Calculate the average rating for each user
         Map<Integer, Double> averageRatings = calculateAverageRatings(userDataList);
 
-        // Output the average ratings to Rating-Results.csv
-        outputAverageRatings("Rating-Results.csv", averageRatings);
+        // Output the average ratings to RatingResults.csv
+        outputAverageRatings("RatingResults.csv", averageRatings);
     }
 
     // Read the CSV file and store user data in an ArrayList
@@ -30,7 +30,7 @@ public class RatingCounter {
                 int target = Integer.parseInt(row[1]);
                 int rating = Integer.parseInt(row[2]);
                 // In the next line, you should pass the actual user ID, which in your case is 'target.'
-                UserData user = new UserData(target, source, target, rating);
+                UserData user = new UserData(target, rating);
                 userDataList.add(user);
             }
         } catch (IOException e) {
@@ -46,7 +46,7 @@ public class RatingCounter {
 
         for (UserData user : userDataList) {
             int userID = user.getUserID();
-            int rating = user.getRating();
+            double rating = user.getRating();
 
             // Update the total rating and rating count for each user
             userAverageRatings.put(userID, userAverageRatings.getOrDefault(userID, 0.0) + rating);

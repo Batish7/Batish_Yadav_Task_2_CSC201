@@ -1,49 +1,47 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MergeSort {
-    // Merge Sort algorithm
+    public static void main(String[] args) {
+        String inputFile = "D:\\2nd Year sem 1\\ICT 221\\Task_2_CSC201\\RatingResults.csv";  // Replace with your CSV file path
+        String outputFile = "MergeSort.csv";  // Replace with the desired output file path
+
+        // Read the CSV file and store user data in an ArrayList
+        ArrayList<UserData> userDataList = readCSVFile(inputFile);
+
+        // Calculate and set the average rating for each user
+        calculateAverageRatings(userDataList);
+
+        // Sort the user data using Merge Sort based on Average Rating
+        mergeSort(userDataList);
+
+        // Write the sorted data back to a new CSV file
+        writeCSVFile(outputFile, userDataList);
+
+        // Call the method to print users with the 4th highest average rating (7.5)
+        printUsersWithNthHighestAverageRating(7, userDataList);
+
+
+
+}
+
     public static void mergeSort(ArrayList<UserData> userDataList) {
-            if (userDataList.size() <= 1) {
-                return; // Already sorted
-            }
-        // Calculate the average rating for each user
-        for (UserData user : userDataList) {
-            double averageRating = 0.0;
-
-            // Assuming getRating() returns a single rating
-            int rating = user.getRating();
-            averageRating = rating;
-
-            user.setAverageRating(averageRating);
+        if (userDataList.size() <= 1) {
+            return;
         }
 
-        // Split the list into two halves
         int mid = userDataList.size() / 2;
         ArrayList<UserData> left = new ArrayList<>(userDataList.subList(0, mid));
         ArrayList<UserData> right = new ArrayList<>(userDataList.subList(mid, userDataList.size()));
 
-        // Recursively sort the two halves
         mergeSort(left);
         mergeSort(right);
 
-        // Merge the sorted halves back into one sorted list
         merge(userDataList, left, right);
     }
 
-    // Merge two sorted lists
-    private static void merge(ArrayList<UserData> userDataList, ArrayList<UserData> left, ArrayList<UserData> right) {
-        // Check for the empty case
-        if (left.isEmpty()) {
-            userDataList.addAll(right);
-            return;
-        }
-
-        if (right.isEmpty()) {
-            userDataList.addAll(left);
-            return;
-        }
-
+    public static void merge(ArrayList<UserData> userDataList, ArrayList<UserData> left, ArrayList<UserData> right) {
         int i = 0, j = 0, k = 0;
 
         while (i < left.size() && j < right.size()) {
@@ -70,33 +68,90 @@ public class MergeSort {
         }
     }
 
-    public static void main(String[] args) {
-        // Call the readCSVFile method from RatingCounter to populate userDataList
-        ArrayList<UserData> userDataList = RatingCounter.readCSVFile("src\\soc-sign-bitcoinotc.csv");
-
-        // Call the mergeSort method to sort the data based on average_rating
-        mergeSort(userDataList);
-
-        // Write sorted data back to the CSV file
-        writeSortedData("Rating-Results.csv", userDataList);
-
+    // Read the CSV file and store user data in an ArrayList
+    public static ArrayList<UserData> readCSVFile(String filePath) {
+        ArrayList<UserData> userDataList = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean firstLine = true; // To skip the first line (headers)
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue; // Skip the first line
+                }
+                String[] row = line.split(",");
+                if (row.length < 2) {
+                    System.out.println("Skipping line with insufficient data: " + line);
+                    continue;
+                }
+                int userID = Integer.parseInt(row[0]);
+                double rating = Double.parseDouble(row[1]); // Parse the rating as double
+                UserData user = new UserData(userID, rating);
+                userDataList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userDataList;
     }
 
-    // Write sorted data back to the CSV file
-    private static void writeSortedData(String outputFilePath, ArrayList<UserData> sortedData) {
-        // Check if the output file already exists
-        File outputFile = new File(outputFilePath);
-        if (outputFile.exists()) {
-            outputFile.delete();
-        }
+    public static void writeCSVFile(String filePath, ArrayList<UserData> userDataList) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("User_ID, Rating\n");
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
-            writer.write("UserID, Average Rating\n");
-            for (UserData user : sortedData) {
-                writer.write(user.getUserID() + "," + String.format("%.3f", user.getAverageRating()) + "\n");
+            for (UserData user : userDataList) {
+                writer.write(user.getUserID() + "," + user.getRating() + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    public static void calculateAverageRatings(ArrayList<UserData> userDataList) {
+        for (UserData user : userDataList) {
+            int userID = user.getUserID();
+            double totalRating = user.getRating();
+            int count = 1;
+
+            for (UserData otherUser : userDataList) {
+                if (otherUser.getUserID() == userID && otherUser != user) {
+                    totalRating += otherUser.getRating();
+                    count++;
+                }
+            }
+
+            double averageRating = totalRating / count;
+            user.setAverageRating(averageRating);
+        }
+    }
+
+    public static void printUsersWithNthHighestAverageRating(int nthRank, ArrayList<UserData> userDataList) {
+        ArrayList<Double> uniqueRatings = new ArrayList<>();
+
+        for (UserData user : userDataList) {
+            double averageRating = user.getAverageRating();
+            if (!uniqueRatings.contains(averageRating)) {
+                uniqueRatings.add(averageRating);
+            }
+        }
+
+        if (nthRank > uniqueRatings.size() || nthRank <= 0) {
+            System.out.println("Invalid rank.");
+            return;
+        }
+
+        // Sort the unique ratings in descending order
+        Collections.sort(uniqueRatings, Collections.reverseOrder());
+
+        double nthHighestRating = uniqueRatings.get(nthRank - 1);
+
+        System.out.println("Users with the " + nthRank + " highest average rating (" + nthHighestRating + "):");
+
+        for (UserData user : userDataList) {
+            if (user.getAverageRating() == nthHighestRating) {
+                System.out.println("User ID: " + user.getUserID() + ", Average Rating: " + String.format("%.3f", nthHighestRating));
+            }
+        }
+    }
+
 }
