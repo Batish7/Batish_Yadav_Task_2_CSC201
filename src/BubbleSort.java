@@ -20,8 +20,9 @@ public class BubbleSort {// Read the CSV file and store user data in an ArrayLis
         writeCSVFile(outputFile, userDataList);
 
         // Call the method to print users with the 4th highest average rating (7.5)
-        printUsersWithNthHighestAverageRating(4, userDataList);
-    } public static void bubbleSort(ArrayList<UserData> userDataList) {
+        printUsersWithNthHighestAverageRating(7, userDataList);
+    }
+    public static void bubbleSort(ArrayList<UserData> userDataList) {
         int n = userDataList.size();
         boolean swapped;
         do {
@@ -36,7 +37,8 @@ public class BubbleSort {// Read the CSV file and store user data in an ArrayLis
                 }
             }
         } while (swapped);
-    }public static ArrayList<UserData> readCSVFile(String filePath) {
+    }
+    public static ArrayList<UserData> readCSVFile(String filePath) {
         ArrayList<UserData> userDataList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
