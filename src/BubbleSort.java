@@ -1,12 +1,11 @@
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class MergeSort {
+public class BubbleSort {// Read the CSV file and store user data in an ArrayList
     public static void main(String[] args) {
         String inputFile = "D:\\2nd Year sem 1\\ICT 221\\Task_2_CSC201\\RatingResults.csv";  // Replace with your CSV file path
-        String outputFile = "MergeSort.csv";  // Replace with the desired output file path
+        String outputFile = "BubbleSort.csv";  // Replace with the desired output file path
 
         // Read the CSV file and store user data in an ArrayList
         ArrayList<UserData> userDataList = readCSVFile(inputFile);
@@ -14,63 +13,30 @@ public class MergeSort {
         // Calculate and set the average rating for each user
         calculateAverageRatings(userDataList);
 
-        // Sort the user data using Merge Sort based on Average Rating
-        mergeSort(userDataList);
+        // Sort the user data using Bubble Sort based on Average Rating
+        bubbleSort(userDataList);
 
         // Write the sorted data back to a new CSV file
         writeCSVFile(outputFile, userDataList);
 
         // Call the method to print users with the 4th highest average rating (7.5)
-        printUsersWithNthHighestAverageRating(7, userDataList);
-
-
-
-}
-
-    public static void mergeSort(ArrayList<UserData> userDataList) {
-        if (userDataList.size() <= 1) {
-            return;
-        }
-
-        int mid = userDataList.size() / 2;
-        ArrayList<UserData> left = new ArrayList<>(userDataList.subList(0, mid));
-        ArrayList<UserData> right = new ArrayList<>(userDataList.subList(mid, userDataList.size()));
-
-        mergeSort(left);
-        mergeSort(right);
-
-        merge(userDataList, left, right);
-    }
-
-    public static void merge(ArrayList<UserData> userDataList, ArrayList<UserData> left, ArrayList<UserData> right) {
-        int i = 0, j = 0, k = 0;
-
-        while (i < left.size() && j < right.size()) {
-            if (left.get(i).getAverageRating() >= right.get(j).getAverageRating()) {
-                userDataList.set(k, left.get(i));
-                i++;
-            } else {
-                userDataList.set(k, right.get(j));
-                j++;
+        printUsersWithNthHighestAverageRating(4, userDataList);
+    } public static void bubbleSort(ArrayList<UserData> userDataList) {
+        int n = userDataList.size();
+        boolean swapped;
+        do {
+            swapped = false;
+            for (int i = 0; i < n - 1; i++) {
+                if (userDataList.get(i).getAverageRating() < userDataList.get(i + 1).getAverageRating()) {
+                    // Swap userData at position i and i+1
+                    UserData temp = userDataList.get(i);
+                    userDataList.set(i, userDataList.get(i + 1));
+                    userDataList.set(i + 1, temp);
+                    swapped = true;
+                }
             }
-            k++;
-        }
-
-        while (i < left.size()) {
-            userDataList.set(k, left.get(i));
-            i++;
-            k++;
-        }
-
-        while (j < right.size()) {
-            userDataList.set(k, right.get(j));
-            j++;
-            k++;
-        }
-    }
-
-    // Read the CSV file and store user data in an ArrayList
-    public static ArrayList<UserData> readCSVFile(String filePath) {
+        } while (swapped);
+    }public static ArrayList<UserData> readCSVFile(String filePath) {
         ArrayList<UserData> userDataList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -125,7 +91,6 @@ public class MergeSort {
             user.setAverageRating(averageRating);
         }
     }
-
     public static void printUsersWithNthHighestAverageRating(int nthRank, ArrayList<UserData> userDataList) {
         ArrayList<Double> uniqueRatings = new ArrayList<>();
 
