@@ -14,6 +14,7 @@ public class MergeSort {
         // Calculate and set the average rating for each user
         calculateAverageRatings(userDataList);
 
+        mergeSort(userDataList); // comment this to run the analysis
 
         // Write the sorted data back to a new CSV file
         writeCSVFile(outputFile, userDataList);
