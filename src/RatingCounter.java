@@ -15,7 +15,7 @@ public class RatingCounter {
         outputAverageRatings("RatingResults.csv", averageRatings);
     }
 
-    // Read the CSV file and store user data in an ArrayList
+    // Method to Read the CSV file and store user data in an ArrayList
     public static ArrayList<UserData> readCSVFile(String filePath) {
         ArrayList<UserData> userDataList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -29,7 +29,8 @@ public class RatingCounter {
                 int source = Integer.parseInt(row[0]);
                 int target = Integer.parseInt(row[1]);
                 int rating = Integer.parseInt(row[2]);
-                // In the next line, you should pass the actual user ID, which in your case is 'target.'
+
+
                 UserData user = new UserData(target, rating);
                 userDataList.add(user);
             }
@@ -39,7 +40,7 @@ public class RatingCounter {
         return userDataList;
     }
 
-    // Calculate the average rating for each user
+    // Method to Calculate the average rating for each user
     private static Map<Integer, Double> calculateAverageRatings(ArrayList<UserData> userDataList) {
         Map<Integer, Double> userAverageRatings = new HashMap<>();
         Map<Integer, Integer> userRatingCounts = new HashMap<>();
@@ -53,7 +54,7 @@ public class RatingCounter {
             userRatingCounts.put(userID, userRatingCounts.getOrDefault(userID, 0) + 1);
         }
 
-        // Calculate the average rating for each user
+        //  Calculate the average rating for each user
         for (int userID : userAverageRatings.keySet()) {
             double totalRating = userAverageRatings.get(userID);
             int ratingCount = userRatingCounts.get(userID);
@@ -64,7 +65,7 @@ public class RatingCounter {
         return userAverageRatings;
     }
 
-    // Output the average ratings to a CSV file
+    // Method to Output the average ratings to a CSV file
     private static void outputAverageRatings(String outputFilePath, Map<Integer, Double> averageRatings) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
             // Write headers

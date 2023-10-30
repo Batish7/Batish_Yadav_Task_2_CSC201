@@ -6,7 +6,7 @@ public class UserData {
     public UserData(int userID, double rating) {
         this.userID = userID;
         this.rating = rating;
-        this.averageRating = 0.0; // Initialize averageRating to 0.0
+        this.averageRating = 0.0;
     }
 
     public int getUserID() {
@@ -21,9 +21,6 @@ public class UserData {
         return averageRating;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
 
     public void setRating(double rating) {
         this.rating = rating;

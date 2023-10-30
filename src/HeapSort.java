@@ -13,12 +13,20 @@ public class HeapSort {
         // Calculate and set the average rating for each user
         calculateAverageRatings(userDataList);
 
-        // Sort the user data using Heap Sort based on Average Rating
-        heapSort(userDataList);
-
         // Write the sorted data back to a new CSV file
         writeCSVFile(outputFile, userDataList);
+
+        // test for user with 7th highest rating
         printUsersWithNthHighestAverageRating(7,userDataList);
+
+        // comparing their execution times.
+        ArrayList<UserData> userDataListMerge = new ArrayList<>(userDataList);
+        long startTime= System.nanoTime();
+        heapSort(userDataList);
+        long endTime = System.nanoTime();
+        long executionTime = (endTime - startTime) / 1_000_000; // Convert to milliseconds
+        System.out.println("Heap Sort Execution Time: " + executionTime + " milliseconds");
+
     }
 
     public static void heapSort(ArrayList<UserData> userDataList) {
@@ -61,11 +69,11 @@ public class HeapSort {
         ArrayList<UserData> userDataList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            boolean firstLine = true; // To skip the first line (headers)
+            boolean firstLine = true;
             while ((line = reader.readLine()) != null) {
                 if (firstLine) {
                     firstLine = false;
-                    continue; // Skip the first line
+                    continue;
                 }
                 String[] row = line.split(",");
                 if (row.length < 2) {
@@ -73,7 +81,7 @@ public class HeapSort {
                     continue;
                 }
                 int userID = Integer.parseInt(row[0]);
-                double rating = Double.parseDouble(row[1]); // Parse the rating as double
+                double rating = Double.parseDouble(row[1]);
                 UserData user = new UserData(userID, rating);
                 userDataList.add(user);
             }

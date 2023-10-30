@@ -2,10 +2,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class BubbleSort {// Read the CSV file and store user data in an ArrayList
+public class BubbleSort {
     public static void main(String[] args) {
-        String inputFile = "D:\\2nd Year sem 1\\ICT 221\\Task_2_CSC201\\RatingResults.csv";  // Replace with your CSV file path
-        String outputFile = "BubbleSort.csv";  // Replace with the desired output file path
+        String inputFile = "D:\\2nd Year sem 1\\ICT 221\\Task_2_CSC201\\RatingResults.csv";
+        String outputFile = "BubbleSort.csv";
 
         // Read the CSV file and store user data in an ArrayList
         ArrayList<UserData> userDataList = readCSVFile(inputFile);
@@ -13,14 +13,22 @@ public class BubbleSort {// Read the CSV file and store user data in an ArrayLis
         // Calculate and set the average rating for each user
         calculateAverageRatings(userDataList);
 
-        // Sort the user data using Bubble Sort based on Average Rating
-        bubbleSort(userDataList);
 
         // Write the sorted data back to a new CSV file
         writeCSVFile(outputFile, userDataList);
 
-        // Call the method to print users with the 4th highest average rating (7.5)
+        // Call the method to print users with the nth highest average rating (7.5)
         printUsersWithNthHighestAverageRating(7, userDataList);
+
+        // comparing their execution times.
+
+        ArrayList<UserData> userDataListMerge = new ArrayList<>(userDataList);
+        long startTime= System.nanoTime();
+        bubbleSort(userDataList);
+        long endTime = System.nanoTime();
+        long executionTime = (endTime - startTime) / 1_000_000; // Converting to milliseconds
+        System.out.println("Bubble Sort Execution Time: " + executionTime + " milliseconds");
+
     }
     public static void bubbleSort(ArrayList<UserData> userDataList) {
         int n = userDataList.size();
@@ -29,6 +37,7 @@ public class BubbleSort {// Read the CSV file and store user data in an ArrayLis
             swapped = false;
             for (int i = 0; i < n - 1; i++) {
                 if (userDataList.get(i).getAverageRating() < userDataList.get(i + 1).getAverageRating()) {
+
                     // Swap userData at position i and i+1
                     UserData temp = userDataList.get(i);
                     userDataList.set(i, userDataList.get(i + 1));
@@ -42,11 +51,11 @@ public class BubbleSort {// Read the CSV file and store user data in an ArrayLis
         ArrayList<UserData> userDataList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            boolean firstLine = true; // To skip the first line (headers)
+            boolean firstLine = true;
             while ((line = reader.readLine()) != null) {
                 if (firstLine) {
                     firstLine = false;
-                    continue; // Skip the first line
+                    continue;
                 }
                 String[] row = line.split(",");
                 if (row.length < 2) {
@@ -54,7 +63,7 @@ public class BubbleSort {// Read the CSV file and store user data in an ArrayLis
                     continue;
                 }
                 int userID = Integer.parseInt(row[0]);
-                double rating = Double.parseDouble(row[1]); // Parse the rating as double
+                double rating = Double.parseDouble(row[1]);
                 UserData user = new UserData(userID, rating);
                 userDataList.add(user);
             }
@@ -108,7 +117,7 @@ public class BubbleSort {// Read the CSV file and store user data in an ArrayLis
             return;
         }
 
-        // Sort the unique ratings in descending order
+        // Sorting the unique ratings in descending order
         Collections.sort(uniqueRatings, Collections.reverseOrder());
 
         double nthHighestRating = uniqueRatings.get(nthRank - 1);
